@@ -93,8 +93,8 @@ A API Theka oferece diversos filtros para facilitar a busca e organização dos 
 
 | Parâmetro | Tipo | Descrição | Exemplo |
 |-----------|------|-----------|----------|
-| `genero` | ID | Filtra por gênero específico | `?genero=1` |
-| `editora` | ID | Filtra por editora específica | `?editora=2` |
+| `genero` | ID, nome | Filtra por gênero específico | `?genero=1` `?genero_nome=comedia` |
+| `editora` | ID, nome | Filtra por editora específica | `?editora=2` `?editora_nome=intrinseca` |
 | `ano_publicacao` | Integer | Filtra por ano de publicação | `?ano_publicacao=2023` |
 
 #### 🔍 Busca por Texto
@@ -188,4 +188,4 @@ theka_API/
 
 **Carlos Gabriel**  
 Desenvolvedor Backend | Estudante de Engenharia da Computação  
-[GitHub](https://github.com/) • [LinkedIn](https://linkedin.com/)
+[GitHub](https://github.com/CarlosG18) • [LinkedIn](https://linkedin.com/in/carlosg18/)
