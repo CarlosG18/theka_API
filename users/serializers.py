@@ -2,6 +2,13 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.core.validators import validate_email
 import re
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 class UserSerializer(serializers.ModelSerializer):
     # Campo de confirmação de senha (apenas para escrita)
@@ -14,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
             'email': {'required': True}
         }
-        read_only_fields = ('id', 'username')
+        read_only_fields = ('id',)
 
     def validate_email(self, value):
         """
@@ -137,3 +144,78 @@ class UserSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Não existe usuário com este email.")
+        return value
+
+    def save(self):
+        email = self.validated_data['email']
+        user = User.objects.get(email=email)
+        
+        # Gerar token e uid
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Construir URL de reset
+        reset_url = f"{settings.FRONTEND_URL}/password-reset-confirm/{uid}/{token}/"
+        
+        # Contexto para o template de email
+        context = {
+            'user': user,
+            'reset_url': reset_url,
+            'site_name': 'Sua Aplicação',  # Nome da sua aplicação
+        }
+        
+        # Renderizar template HTML
+        html_message = render_to_string('emails/password_reset.html', context)
+        plain_message = strip_tags(html_message)
+        
+        # Enviar email
+        send_mail(
+            subject='Redefinição de Senha - Sua Aplicação',
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True, min_length=8)
+    new_password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password_confirm']:
+            raise serializers.ValidationError({"new_password_confirm": "As senhas não coincidem."})
+        return data
+
+    def validate_uid(self, value):
+        try:
+            from django.utils.encoding import force_str
+            from django.utils.http import urlsafe_base64_decode
+            uid = force_str(urlsafe_base64_decode(value))
+            self.user = User.objects.get(pk=uid)
+        except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+            raise serializers.ValidationError("Link inválido.")
+        return value
+
+    def validate_token(self, value):
+        if not hasattr(self, 'user'):
+            return value
+            
+        if not default_token_generator.check_token(self.user, value):
+            raise serializers.ValidationError("Token inválido ou expirado.")
+        return value
+
+    def save(self):
+        user = self.user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

@@ -15,9 +15,9 @@
 
 | Tecnologia | Descrição |
 |-------------|------------|
-| **Python 3.x** | Linguagem principal do projeto |
-| **Django 4.x** | Framework backend robusto e escalável |
-| **Django REST Framework** | Criação e gerenciamento de APIs RESTful |
+| **Python 3.13.5** | Linguagem principal do projeto |
+| **Django 5.2.7** | Framework backend robusto e escalável |
+| **Django REST Framework 3.16.1** | Criação e gerenciamento de APIs RESTful |
 
 ---
 
@@ -44,23 +44,42 @@ Gerencia as informações institucionais:
 
 ## 🧩 Correspondência entre Endpoints e Mockups
 
-### 📋 Tabela de Referência
+### 📋 Tabela de Referência - Login, cadastro e recuperar senha
 
 | Tela / Componente | Imagem | Descrição | Endpoint da API | Método HTTP |
 |------------------|--------|-----------|-----------------|-------------|
-| 📚 **Tela Biblioteca** | ![Biblioteca](https://via.placeholder.com/100x60/4CAF50/white?text=Biblioteca) | Lista todos os livros disponíveis com título, autor e gênero | `/api/livros/` | GET |
-| 📘 **Detalhes do Livro** | ![Detalhes Livro](https://via.placeholder.com/100x60/2196F3/white?text=Detalhes) | Exibe informações detalhadas de um livro selecionado | `/api/livros/{id}/` | GET |
-| ➕ **Adicionar Livro** | ![Adicionar Livro](./docs/add_livro.png) | Formulário para cadastrar novo livro | `/api/livros/` | POST |
-| ✏️ **Editar Livro** | ![Editar Livro](https://via.placeholder.com/100x60/9C27B0/white?text=Editar) | Formulário para editar informações de um livro existente | `/api/livros/{id}/` | PUT/PATCH |
-| 🗑️ **Excluir Livro** | ![Excluir Livro](https://via.placeholder.com/100x60/F44336/white?text=Excluir) | Remove um livro do sistema | `/api/livros/{id}/` | DELETE |
-| 🏢 **Página "Sobre Nós"** | ![Sobre Nós](https://via.placeholder.com/100x60/607D8B/white?text=Sobre+Nós) | Mostra banner e descrição institucional | `/api/sobrenos/` | GET |
-| 📜 **Página "Nossa História"** | ![Nossa História](https://via.placeholder.com/100x60/795548/white?text=História) | Exibe a história da empresa e imagem ilustrativa | `/api/nossa-historia/` | GET |
-| 👥 **Seção Equipe** | ![Equipe](https://via.placeholder.com/100x60/00BCD4/white?text=Equipe) | Lista todos os membros da equipe com nome, cargo e foto | `/api/membros-equipe/` | GET |
-| 💡 **Seção Nossos Valores** | ![Valores](https://via.placeholder.com/100x60/8BC34A/white?text=Valores) | Exibe valores institucionais e descrições | `/api/nossos-valores/` | GET |
-| 📊 **Dashboard Estatísticas** | ![Dashboard](https://via.placeholder.com/100x60/673AB7/white?text=Stats) | Mostra números automáticos de livros, autores e usuários | `/api/estatisticas/` | GET |
-| 🧱 **Página de Administração** | ![Admin](https://via.placeholder.com/100x60/FF5722/white?text=Admin) | Permite criar, editar e excluir registros institucionais | `/api/<entidade>/` | POST, PUT, PATCH, DELETE |
-| **Seção de contatos (footer)** | ![contatos](./docs/contatos.png) | dados do Footer | `institucional/` | GET, POST |
-| **Catalogo dos livros** | ![catalogo](./docs/catalogo.png) | Catalogo dos livros | `institucional/` | GET |
+| **Recuperar senha (etapa 1)** | ![password-reset](./docs/recuperar_senha1.png) | Envia o e-mail de redefinição de senha para o usuário que esqueceu a senha. | `/auth/password/reset/` | POST |
+| **Recuperar senha (etapa 2)** | ![password-reset-confirm](./docs/recuperar_senha2.png) | Confirma a redefinição da senha usando o token enviado por e-mail e define a nova senha. | `/auth/password/reset/confirm/` | POST |
+| **Login (obter token JWT)** | ![token](./docs/login.png) | Realiza o login do usuário e retorna o token de acesso (JWT). | `/auth/token/` | POST |
+| **Criar usuário** | ![users-create](./docs/cadastro.png) | Cria um novo usuário no sistema. | `/users/` | POST |
+
+### 📋 Tabela de Referência - Inicio
+
+| Tela / Componente | Imagem | Descrição | Endpoint da API | Método HTTP |
+|------------------|--------|-----------|-----------------|-------------|
+| **Nossas estatisticas** | ![estatisticas](./docs/estatisticas.png) | Dados das estatisticas do site | `/institucional/estatisticas-biblioteca/` | GET |
+| **Seção de contatos (footer)** | ![contatos](./docs/contatos.png) | Dados do Footer | `/institucional/contato/` | GET, POST |
+
+### 📋 Tabela de Referência - Acervo
+
+| Tela / Componente | Imagem | Descrição | Endpoint da API | Método HTTP |
+|------------------|--------|-----------|-----------------|-------------|
+| **Novidades da Semana** | ![novidades da semana](./docs/novidades_semana.png) | Livros mais recentes | `/livros/novidades/` | GET |
+| **Catalogo dos livros** | ![catalogo](./docs/catalogo.png)         | Catalogo dos livros                  | `/livros/` | GET |
+| **Adicionar Livro**  | ![Adicionar Livro](./docs/add_livro.png) | Formulário para cadastrar novo livro | `/livros/`   | POST |
+| **Editar Livro**  | ![Editar Livro](./docs/editar_livro.png) | Formulário para editar um livro | `/livros/{id}/`   | PATCH |
+| **Ver mais (Livro)**  | ![ver mais - Livro](./docs/ver_mais.png) | ver detalhes do livro | `/livros/{id}/`   | GET |
+| **Seção de contatos (footer)** | ![contatos](./docs/contatos.png) | Dados do Footer | `/institucional/contato/` | GET, POST |
+
+### 📋 Tabela de Referência - Sobre Nós
+
+| Tela / Componente | Imagem | Descrição | Endpoint da API | Método HTTP |
+|------------------|--------|-----------|-----------------|-------------|
+| **Banner inicial** | ![banner inicial](./docs/sobre_nos_initial.png) | texto do banner inicial | `/institucional/sobrenos/` | GET, POST |
+| **Topicos** | ![topicos](./docs/topicos.png) | Topicos de exibição | `/institucional/topicos/` | GET, POST |
+| **Nossa Historia** | ![topicos](./docs/nossa_historia.png) | Nossa historia | `/institucional/institucional/nossa-historia/` | GET, POST |
+| **Nossos valores** | ![topicos](./docs/nossos_valores.png) | Criar e obter nossos valores | `/institucional/nossos-valores/` | GET, POST |
+| **Nossa equipe** | ![topicos](./docs/nossa_equipe.png) | criar e obter novos membros da equipe | `/institucional/membros-equipe/` | GET, POST |
 
 ---
 
@@ -101,9 +120,15 @@ A API Theka oferece diversos filtros para facilitar a busca e organização dos 
 
 ## 🔐 Autenticação e Permissões
 
-A API está atualmente configurada para acesso privado, com suporte à autenticação via **token JWT**. Dessa forma, o acesso aos endpoints é **restrito exclusivamente a usuários autenticados**
 
-tudo de autenticação será feito usando os endpoints de `users` e `auth`
+Atualmente, todos os endpoints da API estão **livres para acesso público**, ou seja, **não exigem autenticação** para realizar requisições.  
+
+No entanto, a estrutura da aplicação já está preparada para suportar autenticação e controle de acesso. É possível ativar a proteção dos endpoints utilizando os recursos disponíveis em:
+
+- **Endpoints de autenticação (`/auth/`)** — responsáveis por login, recuperação e atualização de tokens JWT.  
+- **Endpoints de usuários (`/users/`)** — permitem gerenciar contas e definir permissões específicas para cada usuário.
+
+Dessa forma, caso seja necessário restringir o acesso futuramente, basta configurar as permissões e aplicar autenticação via **token JWT** (JSON Web Token) nos endpoints desejados.
 
 ---
 
@@ -122,7 +147,7 @@ theka_API/
 │ └── tests/
 │ ├── test_models.py
 │ └── test_views.py
-├── library/                             # App da biblioteca
+├── library/                            # App da biblioteca
 │ ├── models.py
 │ ├── serializers.py
 │ ├── views.py
@@ -136,7 +161,7 @@ theka_API/
 │ └── tests/
 │ ├── test_models.py
 │ └── test_views.py
-├── users/                                # App de usuários
+├── users/                              # App de usuários
 │ ├── models.py
 │ ├── serializers.py
 │ ├── views.py
@@ -145,7 +170,7 @@ theka_API/
 │ ├── apps.py
 │ ├── migrations/
 │ └── tests/
-├── theka/                                 # Configurações do projeto
+├── theka/                              # Configurações do projeto
 │ ├── init.py
 │ ├── settings.py
 │ ├── urls.py

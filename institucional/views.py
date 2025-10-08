@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets, status, filters
-from .models import SobreNos, NossaHistoria, MembrosEquipe, NossosValores, topicos, Contato
-from .serializers import SobreNosSerializer, NossaHistoriaSerializer, MembrosEquipeSerializer, NossosValoresSerializer, TopicosSerializer, ContatoSerializer
+from .models import SobreNos, NossaHistoria, MembrosEquipe, NossosValores, topicos, Contato, EstatisticasBiblioteca
+from .serializers import SobreNosSerializer, NossaHistoriaSerializer, MembrosEquipeSerializer, NossosValoresSerializer, TopicosSerializer, ContatoSerializer, EstatisticasBibliotecaSerializer
 from rest_framework.response import Response
 
 # Create your views here.
@@ -9,13 +9,13 @@ class SobreNosViewSet(viewsets.ModelViewSet):
     queryset = SobreNos.objects.all()
     serializer_class = SobreNosSerializer
     #permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'patch']
 
 class NossaHistoriaViewSet(viewsets.ModelViewSet):
     queryset = NossaHistoria.objects.all()
     serializer_class = NossaHistoriaSerializer
     #permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'patch']
 
 class MembrosEquipeViewSet(viewsets.ModelViewSet):
     queryset = MembrosEquipe.objects.all()
@@ -33,7 +33,7 @@ class TopicosViewSet(viewsets.ModelViewSet):
     queryset = topicos.objects.all()
     serializer_class = TopicosSerializer
     #permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -73,6 +73,12 @@ class ContatoViewSet(viewsets.ModelViewSet):
     queryset = Contato.objects.all()
     serializer_class = ContatoSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    #permission_classes = [permissions.IsAuthenticated]
+
+class EstatisticasBibliotecaViewSet(viewsets.ModelViewSet):
+    queryset = EstatisticasBiblioteca.objects.all()
+    serializer_class = EstatisticasBibliotecaSerializer
+    http_method_names = ['get']
     #permission_classes = [permissions.IsAuthenticated]
 
     

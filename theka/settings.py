@@ -166,3 +166,15 @@ SIMPLE_JWT = {
     "ALGORITHM": config('ALGORITHM'),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+# Configurações de Email para Outlook/Office 365
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+# URL do seu frontend para o link de reset
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')

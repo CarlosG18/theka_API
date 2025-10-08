@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from rest_framework import permissions, viewsets, status, filters
+from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -48,3 +51,83 @@ class UserViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+class PasswordResetView(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        request=PasswordResetSerializer,
+        responses={
+            200: {
+                'type': 'object', 
+                'properties': {
+                    'message': {'type': 'string'}
+                }
+            },
+            400: {'description': 'Dados inválidos'}
+        },
+        examples=[
+            OpenApiExample(
+                'Exemplo de requisição',
+                value={'email': 'usuario@example.com'},
+                request_only=True
+            ),
+            OpenApiExample(
+                'Exemplo de resposta',
+                value={'message': 'Email de recuperação enviado com sucesso'},
+                response_only=True
+            )
+        ]
+    )
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {'message': 'Email de recuperação enviado com sucesso'},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        request=PasswordResetConfirmSerializer,
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'message': {'type': 'string'}
+                }
+            },
+            400: {'description': 'Dados inválidos'}
+        },
+        examples=[
+            OpenApiExample(
+                'Exemplo de requisição',
+                value={
+                    'uid': 'MQ',
+                    'token': 'abc123...',
+                    'new_password': 'novasenha123',
+                    'new_password_confirm': 'novasenha123'
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Exemplo de resposta',
+                value={'message': 'Senha redefinida com sucesso'},
+                response_only=True
+            )
+        ]
+    )
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {'message': 'Senha redefinida com sucesso'},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
