@@ -1,5 +1,9 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User, update_last_login
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.settings import api_settings
 from django.core.validators import validate_email
 import re
 from urllib.parse import urlencode
@@ -11,6 +15,53 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+
+
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'
+
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+        style={'input_type': 'password'},
+    )
+
+    default_error_messages = {
+        'no_active_account': 'No active account found with the given credentials'
+    }
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        request = self.context.get('request')
+        user = User.objects.filter(email__iexact=email).first()
+
+        if user:
+            self.user = authenticate(
+                request=request,
+                username=user.get_username(),
+                password=password,
+            )
+        else:
+            self.user = None
+
+        if not api_settings.USER_AUTHENTICATION_RULE(self.user):
+            raise AuthenticationFailed(
+                self.error_messages['no_active_account'],
+                'no_active_account',
+            )
+
+        refresh = self.get_token(self.user)
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+
+        return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     # Campo de confirmação de senha (apenas para escrita)
