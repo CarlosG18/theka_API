@@ -163,18 +163,14 @@ class PasswordResetSerializer(serializers.Serializer):
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         
-        # Construir URL para a rota registrada na API:
-        # /auth/password/reset/confirm/?uid=<uid>&token=<token>
+        # Construir URL para a rota correta de confirmação de reset
         confirm_path = reverse('password_reset_confirm')
         query_string = urlencode({'uid': uid, 'token': token})
         request = self.context.get('request')
-        frontend_url = getattr(settings, 'FRONTEND_URL', '').rstrip('/')
-        if frontend_url:
-            reset_url = f"{frontend_url}{confirm_path}?{query_string}"
-        elif request:
-            reset_url = request.build_absolute_uri(f"{confirm_path}?{query_string}")
-        else:
-            reset_url = f"{confirm_path}?{query_string}"
+        frontend_url = settings.FRONTEND_URL.rstrip('/')
+        if not frontend_url and request:
+            frontend_url = request.build_absolute_uri('/').rstrip('/')
+        reset_url = f"{frontend_url}{confirm_path}?{query_string}"
         
         # Contexto para o template de email
         context = {
