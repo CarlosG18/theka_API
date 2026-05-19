@@ -158,3 +158,18 @@ class PasswordResetTests(APITestCase):
         }
         response = self.client.post(self.confirm_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_legacy_password_reset_confirm_link_redirects_to_api_route(self):
+        """Test old email links do not return 404."""
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+        legacy_url = reverse('legacy_password_reset_confirm', args=[uid, token])
+
+        response = self.client.get(legacy_url)
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        redirect_url = response['Location']
+        self.assertTrue(redirect_url.startswith(f'{self.confirm_url}?'))
+        query_params = parse_qs(urlparse(redirect_url).query)
+        self.assertEqual(query_params['uid'], [uid])
+        self.assertEqual(query_params['token'], [token])
