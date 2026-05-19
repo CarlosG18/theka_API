@@ -2,13 +2,25 @@ from django.shortcuts import render
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from .serializers import UserSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer
+from .serializers import (
+    EmailTokenObtainPairSerializer,
+    UserSerializer,
+    PasswordResetSerializer,
+    PasswordResetConfirmSerializer,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema, OpenApiExample
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your views here.
+
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainPairSerializer
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
