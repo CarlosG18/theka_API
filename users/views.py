@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from urllib.parse import urlencode
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
@@ -7,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema, OpenApiExample
+from django.shortcuts import redirect
+from django.urls import reverse
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -131,3 +134,11 @@ class PasswordResetConfirmView(APIView):
                 status=status.HTTP_200_OK
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LegacyPasswordResetConfirmRedirectView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, uid, token):
+        query_string = urlencode({'uid': uid, 'token': token})
+        return redirect(f"{reverse('password_reset_confirm')}?{query_string}")
