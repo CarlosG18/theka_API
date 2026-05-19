@@ -2,8 +2,10 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.core.validators import validate_email
 import re
+from urllib.parse import urlencode
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
@@ -161,14 +163,20 @@ class PasswordResetSerializer(serializers.Serializer):
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         
-        # Construir URL de reset
-        reset_url = f"{settings.FRONTEND_URL}/password-reset-confirm/{uid}/{token}/"
+        # Construir URL para a rota correta de confirmação de reset
+        confirm_path = reverse('password_reset_confirm')
+        query_string = urlencode({'uid': uid, 'token': token})
+        request = self.context.get('request')
+        frontend_url = settings.FRONTEND_URL.rstrip('/')
+        if not frontend_url and request:
+            frontend_url = request.build_absolute_uri('/').rstrip('/')
+        reset_url = f"{frontend_url}{confirm_path}?{query_string}"
         
         # Contexto para o template de email
         context = {
             'user': user,
             'reset_url': reset_url,
-            'site_name': 'Sua Aplicação',  # Nome da sua aplicação
+            'site_name': 'Theka API',  # Nome da sua aplicação
         }
         
         # Renderizar template HTML

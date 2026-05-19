@@ -127,12 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'core/static/img/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -160,9 +159,9 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(config('ACCESS_TOKEN_LIFETIME'))),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=int(config('REFRESH_TOKEN_LIFETIME'))),
-    "ROTATE_REFRESH_TOKENS": config('ROTATE_REFRESH_TOKENS'),
-    "BLACKLIST_AFTER_ROTATION": config('BLACKLIST_AFTER_ROTATION'),
-    "UPDATE_LAST_LOGIN": config('UPDATE_LAST_LOGIN'),
+    "ROTATE_REFRESH_TOKENS": config('ROTATE_REFRESH_TOKENS', cast=bool),
+    "BLACKLIST_AFTER_ROTATION": config('BLACKLIST_AFTER_ROTATION', cast=bool),
+    "UPDATE_LAST_LOGIN": config('UPDATE_LAST_LOGIN', cast=bool),
     "ALGORITHM": config('ALGORITHM'),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }

@@ -9,7 +9,7 @@ class SobreNosViewSet(viewsets.ModelViewSet):
     queryset = SobreNos.objects.all()
     serializer_class = SobreNosSerializer
     #permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'patch']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
 class NossaHistoriaViewSet(viewsets.ModelViewSet):
     queryset = NossaHistoria.objects.all()

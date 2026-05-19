@@ -22,7 +22,7 @@ from .filters import LivroFilter
 class LivroViewSet(viewsets.ModelViewSet):
     queryset = Livro.objects.all()
     serializer_class = LivroSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     
     # CORREÇÃO: Configuração segura de filtros
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -96,13 +96,13 @@ class LivroViewSet(viewsets.ModelViewSet):
 class GeneroViewSet(viewsets.ModelViewSet):
     queryset = Genero.objects.all()
     serializer_class = GeneroSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
 class EditoraViewSet(viewsets.ModelViewSet):
     queryset = Editora.objects.all()
     serializer_class = EditoraSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def create(self, request, *args, **kwargs):
