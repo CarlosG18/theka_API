@@ -77,11 +77,11 @@ class Livro(models.Model):
         modelo para representar livros.
     """
     titulo = models.CharField(max_length=255)
-    numero_paginas = models.PositiveIntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+    numero_paginas = models.PositiveIntegerField(validators=[MinValueValidator(1)], null=True)
     capa = models.ImageField(upload_to='capas_livros/', blank=True, null=True)
     isbn = models.CharField("ISBN", max_length=17, unique=True)  # Aumentado para 17 para permitir formatação
     autor = models.CharField(max_length=255)
-    ano_publicacao = models.PositiveIntegerField(blank=True, null=True)
+    ano_publicacao = models.PositiveIntegerField(null=True)
     editora = models.ForeignKey(Editora, on_delete=models.CASCADE, related_name='livros')
     resumo = models.TextField()
     genero = models.ForeignKey(Genero, on_delete=models.CASCADE, related_name='livros')
