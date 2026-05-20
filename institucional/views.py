@@ -15,7 +15,7 @@ class NossaHistoriaViewSet(viewsets.ModelViewSet):
     queryset = NossaHistoria.objects.all()
     serializer_class = NossaHistoriaSerializer
     #permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'patch']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
 class MembrosEquipeViewSet(viewsets.ModelViewSet):
     queryset = MembrosEquipe.objects.all()
@@ -80,5 +80,3 @@ class EstatisticasBibliotecaViewSet(viewsets.ModelViewSet):
     serializer_class = EstatisticasBibliotecaSerializer
     http_method_names = ['get']
     #permission_classes = [permissions.IsAuthenticated]
-
-    

@@ -48,10 +48,8 @@ class EditoraSerializer(serializers.ModelSerializer):
         return value
 
 class LivroSerializer(serializers.ModelSerializer):
-    # Para escrita: campos CharField que aceitam strings
-    # Para leitura: mostra apenas o nome como string
-    genero = serializers.CharField(write_only=True)
-    editora = serializers.CharField(write_only=True)
+    genero = serializers.PrimaryKeyRelatedField(queryset=Genero.objects.all())
+    editora = serializers.PrimaryKeyRelatedField(queryset=Editora.objects.all())
     
     # Campos apenas para leitura que mostram os nomes
     genero_nome = serializers.CharField(source='genero.nome', read_only=True)
@@ -65,46 +63,6 @@ class LivroSerializer(serializers.ModelSerializer):
             'genero', 'genero_nome', 'criado_em', 'atualizado_em'
         ]
         read_only_fields = ('criado_em', 'atualizado_em')
-
-    def create(self, validated_data):
-        # Extrai os nomes do gênero e editora
-        genero_nome = validated_data.pop('genero')
-        editora_nome = validated_data.pop('editora')
-        
-        # Busca ou cria o gênero
-        genero, _ = Genero.objects.get_or_create(nome=genero_nome)
-        
-        # Busca ou cria a editora
-        editora, _ = Editora.objects.get_or_create(nome=editora_nome)
-        
-        # Cria o livro
-        livro = Livro.objects.create(
-            genero=genero,
-            editora=editora,
-            **validated_data
-        )
-        
-        return livro
-
-    def update(self, instance, validated_data):
-        # Atualiza gênero se fornecido
-        if 'genero' in validated_data:
-            genero_nome = validated_data.pop('genero')
-            genero, _ = Genero.objects.get_or_create(nome=genero_nome)
-            instance.genero = genero
-            
-        # Atualiza editora se fornecido
-        if 'editora' in validated_data:
-            editora_nome = validated_data.pop('editora')
-            editora, _ = Editora.objects.get_or_create(nome=editora_nome)
-            instance.editora = editora
-        
-        # Atualiza outros campos
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-            
-        instance.save()
-        return instance
 
     def to_representation(self, instance):
         """

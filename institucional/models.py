@@ -25,6 +25,31 @@ class SobreNos(models.Model):
     """
     banner = models.ImageField(upload_to='banners/', blank=True, null=True)
     descricao = models.TextField()
+    nossa_historia = models.ForeignKey(
+        'NossaHistoria',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='sobre_nos',
+    )
+    estatisticas_biblioteca = models.ForeignKey(
+        'EstatisticasBiblioteca',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='sobre_nos',
+    )
+    topicos = models.ManyToManyField(topicos, blank=True, related_name='sobre_nos')
+    membros_equipe = models.ManyToManyField(
+        'MembrosEquipe',
+        blank=True,
+        related_name='sobre_nos',
+    )
+    nossos_valores = models.ManyToManyField(
+        'NossosValores',
+        blank=True,
+        related_name='sobre_nos',
+    )
     
     class Meta:
         verbose_name = "Sobre Nós"
