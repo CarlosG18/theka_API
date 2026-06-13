@@ -6,8 +6,8 @@
 
 ## 🌐 Acesso
 
-- **API Base:** [LINK DA API](https://thekaapideploy2.pythonanywhere.com)
-- **Documentação Interativa (Swagger):** [DOCUMENTAÇÃO DA API](https://thekaapideploy2.pythonanywhere.com/docs/)
+- **API Base:** [LINK DA API](https://thekaapi3.pythonanywhere.com)
+- **Documentação Interativa (Swagger):** [DOCUMENTAÇÃO DA API](https://thekaapi3.pythonanywhere.com/docs)
 
 ---
 
