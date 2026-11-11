@@ -6,8 +6,8 @@
 
 ## 🌐 Acesso
 
-- **API Base:** [LINK DA API](https://thekaapitrainee1.pythonanywhere.com)
-- **Documentação Interativa (Swagger):** [DOCUMENTAÇÃO DA API](https://thekaapitrainee1.pythonanywhere.com/docs/)
+- **API Base:** [LINK DA API](https://thekapitrainee.pythonanywhere.com)
+- **Documentação Interativa (Swagger):** [DOCUMENTAÇÃO DA API](https://thekapitrainee.pythonanywhere.com/docs/)
 
 ---
 
