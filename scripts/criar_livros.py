@@ -2,8 +2,8 @@
 Cria os livros de scripts/livros.json na Theka API via HTTP.
 
 Uso:
-    python scripts/criar_livros.py                          # produção
-    python scripts/criar_livros.py http://localhost:8000    # local
+    python scripts/criar_livros.py                          # pergunta o domínio
+    python scripts/criar_livros.py http://localhost:8000    # informa direto
 
 Gêneros e editoras são informados por nome no JSON; os que não existirem são criados.
 Livros cujo ISBN já existe são ignorados, então o script pode ser rodado de novo.
@@ -15,7 +15,9 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE_URL = (sys.argv[1] if len(sys.argv) > 1 else "https://thekaapitrainee1.pythonanywhere.com").rstrip("/")
+BASE_URL = (sys.argv[1] if len(sys.argv) > 1 else input("Domínio da API (ex: https://seu-app.pythonanywhere.com): ").strip()).rstrip("/")
+if not BASE_URL.startswith("http"):
+    BASE_URL = "https://" + BASE_URL
 PASTA = Path(__file__).parent
 
 
